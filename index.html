@@ -65,6 +65,7 @@ let i=setInterval(()=>{
   }
 },20);
 </script>
+
 <style>
 :root{
   --bg:#1a120b;
@@ -115,11 +116,11 @@ body.light{
 
 /* posisi icon */
 .icon.sun{
-  margin-left:auto;
+  margin-right:auto;
   opacity:0.4;
 }
 .icon.moon{
-  margin-right:auto;
+  margin-left:auto;
   opacity:1;
 }
 
@@ -131,7 +132,7 @@ body.light{
   background:#f2c94c;
   border-radius:50%;
   top:3px;
-  left:3px;
+  right:3px;
   transition:transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
@@ -142,7 +143,7 @@ body.light .switch{
 }
 
 body.light .knob{
-  transform:translateX(32px);
+  transform:translateX(-32px);
   background:#1a120b;
 }
 
