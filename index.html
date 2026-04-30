@@ -9,7 +9,7 @@
   align-items:center;
   flex-direction:column;
   z-index:9999;
-  transition:opacity .8s ease;
+  transition:opacity .6s ease;
 }
 .loader-circle{
   width:90px;height:90px;
@@ -38,7 +38,6 @@
   color:#f2c94c;
   letter-spacing:3px;
   font-size:13px;
-  opacity:.8;
 }
 @keyframes spin{
   100%{transform:rotate(360deg);}
@@ -54,99 +53,33 @@
 
 <script>
 let p=0;
+let done=false;
+
 let i=setInterval(()=>{
-  p++;
-  document.getElementById("loading-number").innerText=p+"%";
-  if(p>=100){
-    clearInterval(i);
-    let el=document.getElementById("preloader");
-    el.style.opacity="0";
-    setTimeout(()=>{el.style.display="none";},800);
+  if(p<90){
+    p++;
+    document.getElementById("loading-number").innerText=p+"%";
   }
 },20);
-</script>
 
-<style>
-:root{
-  --bg:#ffffff;
-  --text:#111111;
-}
+window.addEventListener("load",()=>{
+  done=true;
+  clearInterval(i);
 
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  transition:background .3s,color .3s;
-}
+  let count=setInterval(()=>{
+    if(p<100){
+      p++;
+      document.getElementById("loading-number").innerText=p+"%";
+    }else{
+      clearInterval(count);
 
-.dark{
-  --bg:#1a120b;
-  --text:#fff8e1;
-}
+      let el=document.getElementById("preloader");
+      el.style.opacity="0";
 
-.theme-toggle{
-  position:fixed;
-  top:20px;
-  right:20px;
-  z-index:10000;
-}
-
-.theme-toggle input{
-  display:none;
-}
-
-.switch{
-  width:52px;
-  height:28px;
-  background:#ccc;
-  border-radius:50px;
-  position:relative;
-  cursor:pointer;
-  transition:background .3s;
-}
-
-.switch::before{
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  top:3px;
-  left:3px;
-  background:#ffffff;
-  border-radius:50%;
-  transition:transform .3s;
-}
-
-.theme-toggle input:checked + .switch{
-  background:#f2c94c;
-}
-
-.theme-toggle input:checked + .switch::before{
-  transform:translateX(24px);
-}
-</style>
-
-<div class="theme-toggle">
-  <input type="checkbox" id="toggle">
-  <label for="toggle" class="switch"></label>
-</div>
-
-<script>
-const toggle=document.getElementById("toggle");
-const saved=localStorage.getItem("theme");
-
-if(saved==="dark"){
-  document.body.classList.add("dark");
-  toggle.checked=true;
-}
-
-toggle.addEventListener("change",()=>{
-  if(toggle.checked){
-    document.body.classList.add("dark");
-    localStorage.setItem("theme","dark");
-  }else{
-    document.body.classList.remove("dark");
-    localStorage.setItem("theme","light");
-  }
+      setTimeout(()=>{
+        el.style.display="none";
+      },500);
+    }
+  },10);
 });
 </script>
