@@ -1,166 +1,764 @@
-<style>
-#preloader{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:#1a120b;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:9999;
-  transition:opacity .8s ease;
-}
-.loader-circle{
-  width:90px;height:90px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.1);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
-}
-.loader-circle::before{
-  content:"";
-  position:absolute;
-  width:90px;height:90px;
-  border-radius:50%;
-  border-top:3px solid #f2c94c;
-  border-right:3px solid transparent;
-  animation:spin 1s linear infinite;
-}
-#loading-number{
-  color:#fff8e1;
-  font-size:18px;
-}
-.loader-text{
-  margin-top:15px;
-  color:#f2c94c;
-  letter-spacing:3px;
-  font-size:13px;
-  opacity:.8;
-}
-@keyframes spin{
-  100%{transform:rotate(360deg);}
-}
-</style>
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biosekuriti Unggas — Desa Sukaruas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
 
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --cream:    #f5f0e8;
+      --warm:     #e8dfc8;
+      --straw:    #c9b882;
+      --terracotta: #c4744a;
+      --moss:     #6b7c52;
+      --sage:     #a3b58a;
+      --feather:  #d6cbb5;
+      --amber:    #b8860b;
+      --soil:     #5c4a2a;
+      --text:     #2e2416;
+      --text-muted: #7a6a52;
+      --bg:       #f5f0e8;
+      --surface:  #faf7f1;
+      --border:   rgba(90,70,40,.12);
+      --shadow:   0 4px 32px rgba(90,70,40,.10);
+      --radius:   18px;
+    }
+    [data-theme="dark"] {
+      --cream:    #1c1810;
+      --warm:     #2a2418;
+      --straw:    #8a7848;
+      --terracotta: #c4744a;
+      --moss:     #5a6b42;
+      --sage:     #728560;
+      --feather:  #3a322a;
+      --amber:    #c8960c;
+      --soil:     #e0cfa8;
+      --text:     #f0e8d8;
+      --text-muted: #a89878;
+      --bg:       #161210;
+      --surface:  #1e1a14;
+      --border:   rgba(200,170,100,.10);
+      --shadow:   0 4px 32px rgba(0,0,0,.4);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .35s ease, color .35s ease;
+      overflow-x: hidden;
+    }
+
+    /* ── PRELOADER ── */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--cream);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px;
+      transition: opacity .6s ease, visibility .6s ease;
+    }
+    #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-icon {
+      width: 72px; height: 72px;
+      position: relative;
+    }
+    .loader-icon svg {
+      width: 100%; height: 100%;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-bar {
+      width: 200px; height: 3px;
+      background: var(--feather);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .loader-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--moss), var(--terracotta));
+      border-radius: 99px;
+      width: 0;
+      animation: fill 1.8s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes fill { to { width: 100%; } }
+    .loader-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem; color: var(--text-muted); letter-spacing: .05em;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 500;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(245,240,232,.85);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 10px 18px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 2px 20px rgba(90,70,40,.12);
+      transition: background .35s, box-shadow .35s;
+    }
+    [data-theme="dark"] nav {
+      background: rgba(28,24,16,.85);
+    }
+    .nav-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: .95rem; color: var(--soil);
+      letter-spacing: .01em; white-space: nowrap;
+    }
+    .nav-sep { width: 1px; height: 18px; background: var(--border); }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      font-size: .8rem; font-weight: 500; color: var(--text-muted);
+      text-decoration: none; padding: 5px 12px; border-radius: 99px;
+      transition: background .2s, color .2s;
+    }
+    .nav-links a:hover { background: var(--warm); color: var(--text); }
+
+    /* ── THEME PILL ── */
+    .theme-pill {
+      display: flex; align-items: center; gap: 2px;
+      background: var(--warm);
+      border-radius: 99px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .pill-btn {
+      width: 30px; height: 30px;
+      border-radius: 99px; border: none; cursor: pointer;
+      background: transparent; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: background .2s, color .2s;
+    }
+    .pill-btn.active {
+      background: var(--surface);
+      color: var(--terracotta);
+      box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    }
+
+    /* ── SCROLL BUTTONS ── */
+    .scroll-dock {
+      position: fixed; right: 28px; bottom: 36px;
+      z-index: 400;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .scroll-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%; border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow);
+      transition: background .2s, color .2s, transform .15s;
+      backdrop-filter: blur(12px);
+    }
+    .scroll-btn:hover { background: var(--warm); color: var(--terracotta); transform: scale(1.1); }
+
+    /* ── HERO ── */
+    #home {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    /* organic background */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      overflow: hidden;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(163,181,138,.22) 0%, transparent 70%);
+      top: -200px; right: -200px;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,116,74,.12) 0%, transparent 70%);
+      bottom: -150px; left: -100px;
+    }
+    .hero-grain {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+      opacity: .4; pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 780px; text-align: center; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: .78rem; font-weight: 500; color: var(--moss);
+      letter-spacing: .04em; text-transform: uppercase;
+      margin-bottom: 32px;
+      opacity: 0; animation: fadeUp .6s .3s forwards;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--moss); }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      line-height: 1.12;
+      color: var(--soil);
+      margin-bottom: 12px;
+      opacity: 0; animation: fadeUp .7s .45s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+
+    .hero-sub {
+      font-size: clamp(.95rem, 2vw, 1.15rem);
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+      opacity: 0; animation: fadeUp .7s .6s forwards;
+    }
+
+    .hero-cta {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: fadeUp .7s .75s forwards;
+    }
+    .btn-primary, .btn-ghost {
+      padding: 13px 28px; border-radius: 99px;
+      font-size: .9rem; font-weight: 500;
+      cursor: pointer; border: none;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--moss), #4e5e38);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(107,124,82,.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(107,124,82,.4); }
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--warm); transform: translateY(-2px); }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      position: relative; z-index: 1;
+      display: flex; flex-wrap: wrap; gap: 16px;
+      justify-content: center;
+      margin-top: 64px;
+      opacity: 0; animation: fadeUp .7s .9s forwards;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 28px;
+      text-align: center; min-width: 150px;
+      box-shadow: var(--shadow);
+      transition: transform .2s;
+    }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem; color: var(--terracotta);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: .78rem; color: var(--text-muted);
+      margin-top: 6px; line-height: 1.4;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%; text-align: center;
+      position: relative; margin: 0;
+      padding: 0 24px;
+    }
+    .divider-line {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── ABOUT / OVERVIEW ── */
+    #about {
+      padding: 100px 24px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .section-label {
+      font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--moss); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--soil); line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .section-body {
+      font-size: 1rem; line-height: 1.8;
+      color: var(--text-muted); max-width: 600px;
+    }
+
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+      margin-top: 60px;
+    }
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr; gap: 40px; }
+      .nav-links { display: none; }
+    }
+
+    .info-card-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .info-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .info-card-icon {
+      font-size: 1.6rem; margin-bottom: 10px; display: block;
+    }
+    .info-card-title {
+      font-weight: 600; font-size: .88rem; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .info-card-text {
+      font-size: .8rem; color: var(--text-muted); line-height: 1.5;
+    }
+
+    /* ── KEY FINDINGS ── */
+    #findings {
+      background: var(--warm);
+      padding: 100px 24px;
+      transition: background .35s;
+    }
+    [data-theme="dark"] #findings { background: var(--surface); }
+
+    .findings-inner { max-width: 1100px; margin: 0 auto; }
+    .findings-header { text-align: center; margin-bottom: 56px; }
+    .findings-header .section-body { margin: 0 auto; }
+
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .finding-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      position: relative; overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .finding-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .finding-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .finding-card:nth-child(1)::before { background: var(--terracotta); }
+    .finding-card:nth-child(2)::before { background: var(--moss); }
+    .finding-card:nth-child(3)::before { background: var(--amber); }
+    .finding-card:nth-child(4)::before { background: var(--sage); }
+
+    .finding-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 3rem; color: var(--feather);
+      line-height: 1; margin-bottom: 16px;
+    }
+    [data-theme="dark"] .finding-num { color: var(--feather); opacity: .4; }
+    .finding-title {
+      font-weight: 600; font-size: 1rem; color: var(--text);
+      margin-bottom: 10px;
+    }
+    .finding-text {
+      font-size: .88rem; line-height: 1.65; color: var(--text-muted);
+    }
+
+    /* ── TEAM ── */
+    #team {
+      padding: 100px 24px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .team-header { text-align: center; margin-bottom: 56px; }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .member-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 16px;
+      text-align: center;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .member-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .member-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--sage), var(--moss));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem; color: #fff;
+      margin: 0 auto 12px;
+    }
+    .member-name {
+      font-weight: 600; font-size: .85rem; color: var(--text);
+      line-height: 1.3; margin-bottom: 4px;
+    }
+    .member-id {
+      font-size: .75rem; color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem; color: var(--soil);
+      margin-bottom: 8px;
+    }
+    .footer-sub {
+      font-size: .8rem; color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .footer-bottom {
+      font-size: .75rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 20px; margin-top: 20px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── FEATHER DECO ── */
+    .feather-deco {
+      position: absolute; right: 5%; top: 15%;
+      opacity: .07; font-size: 240px;
+      pointer-events: none; z-index: 0;
+      transform: rotate(25deg);
+      filter: grayscale(1);
+    }
+    [data-theme="dark"] .feather-deco { opacity: .04; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ PRELOADER ═══ -->
 <div id="preloader">
-  <div class="loader-circle">
-    <div id="loading-number">0%</div>
+  <div class="loader-icon">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="28" stroke="#c9b882" stroke-width="2" stroke-dasharray="40 90" stroke-linecap="round"/>
+      <circle cx="32" cy="32" r="20" stroke="#6b7c52" stroke-width="2" stroke-dasharray="25 60" stroke-linecap="round" transform="rotate(60 32 32)"/>
+      <circle cx="32" cy="14" r="5" fill="#c4744a" opacity=".8"/>
+      <path d="M32 22 C28 26 24 30 32 34 C40 30 36 26 32 22Z" fill="#c9b882" opacity=".6"/>
+    </svg>
   </div>
-  <div class="loader-text">LOADING</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <p class="loader-text">Memuat konten penelitian...</p>
 </div>
 
-<script>
-let p=0;
-let i=setInterval(()=>{
-  p++;
-  document.getElementById("loading-number").innerText=p+"%";
-  if(p>=100){
-    clearInterval(i);
-    let el=document.getElementById("preloader");
-    el.style.opacity="0";
-    setTimeout(()=>{el.style.display="none";},800);
-  }
-},20);
-</script>
+<!-- ═══ NAVBAR ═══ -->
+<nav>
+  <span class="nav-brand">🐓 Biosekuriti Unggas</span>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#home">Beranda</a>
+    <a href="#about">Tentang</a>
+    <a href="#findings">Temuan</a>
+    <a href="#team">Tim</a>
+  </div>
+  <div class="theme-pill" id="themePill" title="Ganti tema">
+    <button class="pill-btn active" id="btnLight" onclick="setTheme('light')" title="Mode Terang">☀️</button>
+    <button class="pill-btn" id="btnDark" onclick="setTheme('dark')" title="Mode Gelap">🌙</button>
+  </div>
+</nav>
 
-<style>
-:root {
-  --bg: #1a120b;
-  --text: #fff8e1;
-}
+<!-- ═══ SCROLL DOCK ═══ -->
+<div class="scroll-dock">
+  <button class="scroll-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Ke atas">↑</button>
+  <button class="scroll-btn" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})" title="Ke bawah">↓</button>
+</div>
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  transition: background 0.4s ease, color 0.4s ease;
-}
+<!-- ═══ HERO ═══ -->
+<section id="home">
+  <div class="hero-bg">
+    <div class="hero-grain"></div>
+  </div>
+  <span class="feather-deco">🐔</span>
 
-body.light {
-  --bg: #fff8e1;
-  --text: #1a120b;
-}
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Karya Ilmiah · TeSis 2026 · SMAN 8 Jakarta
+    </div>
 
-.theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.pill {
-  width: 72px;
-  height: 34px;
-  background: #1a120b;
-  border-radius: 999px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.35s;
-  display: flex;
-  align-items: center;
-  padding: 0 5px;
-  box-sizing: border-box;
-}
-body.light .pill {
-  background: #e5d9c3;
-}
-.pill-icons {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 8px;
-  pointer-events: none;
-}
-.pill-icon {
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-  font-size: 14px;
-  line-height: 1;
-  transition: opacity 0.25s;
-}
-.knob {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #f2c94c;
-  position: absolute;
-  top: 50%;
-  left: 4px;
-  transform: translateY(-50%); 
-  transition: left 0.35s cubic-bezier(.4,0,.2,1), background 0.35s;
-}
-body.light .knob {
-  left: 42px;
-  background: #1a120b;
-}
-</style>
+    <h1 class="hero-title">
+      Analisis Strategi Pencegahan<br/>
+      <em>Avian Influenza</em> pada Unggas
+    </h1>
 
-<div class="theme-toggle">
-  <div class="pill" onclick="toggleTheme()">
-    <div class="knob"></div>
-    <div class="pill-icons">
-      <span class="pill-icon moon">🌙</span>
-      <span class="pill-icon sun">☀️</span>
+    <p class="hero-sub">
+      Penerapan Biosekuriti oleh Peternak di Kampung Sukaruas,
+      Kabupaten Tasikmalaya — Sebuah kajian kualitatif lapangan, Januari 2026.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#about" class="btn-primary">
+        <span>Jelajahi Penelitian</span>
+        <span>→</span>
+      </a>
+      <a href="#findings" class="btn-ghost">Temuan Utama</a>
     </div>
   </div>
-</div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num">84%</div>
+      <div class="stat-label">Tingkat fatalitas<br/>kasus H5N1 di Indonesia</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Kasus H5N1 pada<br/>manusia 2005–2017</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">4 Hari</div>
+      <div class="stat-label">Durasi penelitian<br/>lapangan di Sukaruas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Anggota tim<br/>peneliti</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-line" />
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="two-col">
+    <div class="reveal">
+      <p class="section-label">Latar Belakang</p>
+      <h2 class="section-title">Mengapa Biosekuriti<br/>Sangat Penting?</h2>
+      <p class="section-body">
+        Avian Influenza subtipe H5N1 bukan hanya ancaman bagi sektor peternakan —
+        ia adalah isu kesehatan masyarakat yang serius. Di pedesaan Indonesia, peternak
+        rakyat yang mengandalkan sistem tradisional menjadi garis terdepan yang
+        paling rentan.
+      </p>
+      <p class="section-body" style="margin-top:16px;">
+        Penelitian ini dilaksanakan pada <strong>21–24 Januari 2026</strong> di
+        Kampung Sukaruas, Kabupaten Tasikmalaya, menggunakan pendekatan
+        kualitatif deskriptif dengan observasi langsung dan wawancara mendalam.
+      </p>
+    </div>
+
+    <div class="info-card-grid reveal">
+      <div class="info-card">
+        <span class="info-card-icon">🏡</span>
+        <div class="info-card-title">Lokasi</div>
+        <div class="info-card-text">Desa Sukaruas, Kab. Tasikmalaya, Jawa Barat</div>
+      </div>
+      <div class="info-card">
+        <span class="info-card-icon">🔬</span>
+        <div class="info-card-title">Metode</div>
+        <div class="info-card-text">Kualitatif deskriptif, observasi & wawancara</div>
+      </div>
+      <div class="info-card">
+        <span class="info-card-icon">📋</span>
+        <div class="info-card-title">Fokus</div>
+        <div class="info-card-text">Penerapan biosekuriti skala peternakan rakyat</div>
+      </div>
+      <div class="info-card">
+        <span class="info-card-icon">🎓</span>
+        <div class="info-card-title">Institusi</div>
+        <div class="info-card-text">SMA Negeri 8 Jakarta · TeSis 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-line" />
+
+<!-- ═══ KEY FINDINGS ═══ -->
+<section id="findings">
+  <div class="findings-inner">
+    <div class="findings-header reveal">
+      <p class="section-label">Hasil Penelitian</p>
+      <h2 class="section-title">Temuan Utama di Lapangan</h2>
+      <p class="section-body">
+        Penerapan biosekuriti oleh peternak rakyat di Desa Sukaruas masih sangat terbatas,
+        dengan berbagai faktor struktural yang menghambat perbaikannya.
+      </p>
+    </div>
+
+    <div class="findings-grid">
+      <div class="finding-card reveal">
+        <div class="finding-num">01</div>
+        <div class="finding-title">Sanitasi Kandang Minim</div>
+        <div class="finding-text">
+          Sanitasi kandang hanya dilakukan satu kali sebulan, jauh di bawah standar
+          biosekuriti yang dianjurkan. Pengelolaan limbah tidak terstruktur dan tidak konsisten.
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <div class="finding-num">02</div>
+        <div class="finding-title">Ketiadaan APD</div>
+        <div class="finding-text">
+          Peternak tidak menggunakan alat pelindung diri saat menangani unggas.
+          Isolasi unggas sakit dilakukan tidak konsisten dan tanpa prosedur tetap.
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <div class="finding-num">03</div>
+        <div class="finding-title">Pengetahuan Rendah</div>
+        <div class="finding-text">
+          Pengetahuan peternak tentang Avian Influenza sangat rendah. Minimnya penyuluhan
+          dan akses terbatas ke layanan kesehatan hewan memperparah kondisi ini.
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <div class="finding-num">04</div>
+        <div class="finding-title">Faktor Ekonomi</div>
+        <div class="finding-text">
+          Keterbatasan ekonomi menjadi hambatan utama. Peternak cenderung
+          memprioritaskan kestabilan ekonomi jangka pendek dibanding investasi
+          dalam praktik kesehatan ternak.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-line" />
+
+<!-- ═══ TEAM ═══ -->
+<section id="team">
+  <div class="team-header reveal">
+    <p class="section-label">Peneliti</p>
+    <h2 class="section-title">Tim Kelompok 36</h2>
+    <p class="section-body" style="margin: 0 auto;">
+      Enam pelajar SMAN 8 Jakarta yang melakukan penelitian lapangan langsung
+      ke Desa Sukaruas, Kabupaten Tasikmalaya.
+    </p>
+  </div>
+
+  <div class="team-grid">
+    <div class="member-card reveal">
+      <div class="member-avatar">B</div>
+      <div class="member-name">Beby Valenia Mahendra</div>
+      <div class="member-id">27991</div>
+    </div>
+    <div class="member-card reveal">
+      <div class="member-avatar">D</div>
+      <div class="member-name">Damar Khairul Adhim</div>
+      <div class="member-id">28077</div>
+    </div>
+    <div class="member-card reveal">
+      <div class="member-avatar">J</div>
+      <div class="member-name">Jean Kenzani</div>
+      <div class="member-id">28078</div>
+    </div>
+    <div class="member-card reveal">
+      <div class="member-avatar">L</div>
+      <div class="member-name">Lambok Gabriel Huga Nababan</div>
+      <div class="member-id">28109 · Ketua</div>
+    </div>
+    <div class="member-card reveal">
+      <div class="member-avatar">M</div>
+      <div class="member-name">Muhammad Fahri</div>
+      <div class="member-id">28131</div>
+    </div>
+    <div class="member-card reveal">
+      <div class="member-avatar">S</div>
+      <div class="member-name">Saskia Aulia Putri</div>
+      <div class="member-id">28243</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-logo">Biosekuriti Unggas · Sukaruas</div>
+  <p class="footer-sub">Karya Ilmiah TeSis 2026 · SMAN 8 Jakarta</p>
+  <div class="footer-bottom">
+    Dibimbing oleh Nur Siti Kamtiati, S.Pd (Teknis) &amp; Bambang Triaji Asnoto, S.Pd (Materi) ·
+    Kepala Sekolah Drs. Ubaidillah, M.Pd
+  </div>
+</footer>
 
 <script>
-function toggleTheme() {
-  const isLight = document.body.classList.toggle("light");
-  localStorage.setItem("theme", isLight ? "light" : "dark");
-}
-(function () {
-  const saved = localStorage.getItem("theme");
-  if (saved) document.body.classList.toggle("light", saved === "light");
-})();
+  /* ── PRELOADER ── */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('hidden');
+    }, 1900);
+  });
+
+  /* ── THEME ── */
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('btnLight').classList.toggle('active', t === 'light');
+    document.getElementById('btnDark').classList.toggle('active', t === 'dark');
+    localStorage.setItem('theme', t);
+  }
+  // restore saved theme
+  const saved = localStorage.getItem('theme');
+  if (saved) setTheme(saved);
+
+  /* ── REVEAL ON SCROLL ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
+</body>
+</html>
