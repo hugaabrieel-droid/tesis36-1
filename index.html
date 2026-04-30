@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tesis 39</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #0b0b0b;
+  color: white;
+}
+
+/* ===== PRELOADER ===== */
+#preloader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #0b0b0b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+  transition: opacity 1s ease;
+}
+
+.circle {
+  width: 90px;
+  height: 90px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.circle::before {
+  content: "";
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border-top: 2px solid #d4af37;
+  animation: spin 1s linear infinite;
+}
+
+#percent {
+  font-size: 18px;
+  color: #d4af37;
+}
+
+.loader-title {
+  margin-top: 20px;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 3px;
+}
+
+.loader-title span {
+  color: #d4af37;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== HERO ===== */
+#main {
+  display: none;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.7)),
+              url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee') center/cover;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tag {
+  border: 1px solid rgba(255,255,255,0.3);
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 60px;
+  line-height: 1.1;
+}
+
+.gold {
+  color: #d4af37;
+}
+
+.desc {
+  max-width: 500px;
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
+/* BUTTON */
+.btns {
+  margin-top: 30px;
+}
+
+button {
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.primary {
+  background: #d4af37;
+  color: black;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  margin-top: 40px;
+  gap: 40px;
+}
+
+.stats div {
+  border-left: 1px solid rgba(255,255,255,0.2);
+  padding-left: 15px;
+}
+
+.stats h3 {
+  color: #d4af37;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="circle">
+    <div id="percent">0</div>
+  </div>
+  <div class="loader-title">TESIS <span>39</span></div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="tag">Dokumentasi Penelitian • Rajapolah, Tasikmalaya — 2026</div>
+
+  <h1>
+    Sanitasi <br>
+    <span class="gold">& MCK</span><br>
+    Rajapolah
+  </h1>
+
+  <p class="desc">
+    Galeri foto dan dokumentasi visual penelitian lapangan mengenai kondisi fasilitas Mandi Cuci Kakus (MCK) komunal di wilayah Rajapolah.
+  </p>
+
+  <div class="btns">
+    <button class="primary">Lihat Galeri ↓</button>
+    <button class="secondary">Baca Pengantar</button>
+  </div>
+
+  <div class="stats">
+    <div><h3>39</h3><p>Nomor Tim</p></div>
+    <div><h3>4</h3><p>Lokasi</p></div>
+    <div><h3>18</h3><p>Foto</p></div>
+  </div>
+</div>
+
+<script>
+let percent = 0;
+let speed = 25;
+
+let loader = setInterval(() => {
+  percent++;
+  document.getElementById("percent").innerText = percent;
+
+  if (percent >= 100) {
+    clearInterval(loader);
+
+    let preloader = document.getElementById("preloader");
+    preloader.style.opacity = "0";
+
+    setTimeout(() => {
+      preloader.style.display = "none";
+      document.getElementById("main").style.display = "flex";
+    }, 1000);
+  }
+}, speed);
+</script>
+
+</body>
+</html>
