@@ -71,25 +71,21 @@ let i=setInterval(()=>{
   --bg:#1a120b;
   --text:#fff8e1;
 }
-
 body{
   background:var(--bg);
   color:var(--text);
   transition:0.4s ease;
 }
-
 body.light{
   --bg:#fff8e1;
   --text:#1a120b;
 }
-
 .theme-toggle{
   position:fixed;
   top:20px;
   right:20px;
   z-index:999;
 }
-
 .switch{
   width:64px;
   height:32px;
@@ -102,17 +98,12 @@ body.light{
   align-items:center;
   padding:0 6px;
 }
-
-/* ICON */
 .icon{
   font-size:14px;
   z-index:2;
 }
-
 .icon.sun{ margin-left:auto; opacity:.4; }
 .icon.moon{ margin-right:auto; opacity:1; }
-
-/* KNOB FIX */
 .knob{
   position:absolute;
   width:26px;
@@ -123,22 +114,16 @@ body.light{
   left:3px;
   transition:transform 0.35s ease;
 }
-
-/* geser ke kanan pas DARK */
 body:not(.light) .knob{
   transform:translateX(32px);
 }
-
-/* LIGHT MODE */
 body.light .switch{
   background:#ddd2b0;
 }
-
 body.light .knob{
-  transform:translateX(0); /* balik ke kiri */
+  transform:translateX(0);
   background:#1a120b;
 }
-
 body.light .icon.sun{ opacity:1; }
 body.light .icon.moon{ opacity:.4; }
 </style>
@@ -156,14 +141,10 @@ function toggleTheme(){
   let isLight=document.body.classList.toggle("light");
   localStorage.setItem("theme", isLight ? "light" : "dark");
 }
-
 (function(){
   let saved=localStorage.getItem("theme");
   if(saved){
     document.body.classList.toggle("light", saved==="light");
-  }
-})();
-</script>
   }
 })();
 </script>
