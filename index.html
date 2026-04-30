@@ -1,4 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tes</title>
+
 <style>
+body{margin:0}
+
+/* PRELOADER */
 #preloader{
   position:fixed;
   top:0;left:0;
@@ -7,79 +16,87 @@
   display:flex;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
   z-index:9999;
-  transition:opacity .6s ease;
+  transition:opacity .5s;
 }
-.loader-circle{
-  width:90px;height:90px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.1);
-  display:flex;
-  justify-content:center;
-  align-items:center;
+
+/* TOGGLE */
+#toggleWrap{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:10000;
+}
+#toggleWrap input{display:none;}
+#toggleWrap label{
+  width:50px;height:26px;
+  background:#888;
+  border-radius:50px;
+  display:block;
   position:relative;
+  cursor:pointer;
 }
-.loader-circle::before{
+#toggleWrap label::before{
   content:"";
+  width:22px;height:22px;
+  background:#fff;
   position:absolute;
-  width:90px;height:90px;
+  top:2px;left:2px;
   border-radius:50%;
-  border-top:3px solid #f2c94c;
-  border-right:3px solid transparent;
-  animation:spin 1s linear infinite;
+  transition:.3s;
 }
-#loading-number{
+#toggleWrap input:checked + label{
+  background:#f2c94c;
+}
+#toggleWrap input:checked + label::before{
+  transform:translateX(24px);
+}
+
+/* DARK */
+.dark{
+  background:#1a120b;
   color:#fff8e1;
-  font-size:18px;
-}
-.loader-text{
-  margin-top:15px;
-  color:#f2c94c;
-  letter-spacing:3px;
-  font-size:13px;
-}
-@keyframes spin{
-  100%{transform:rotate(360deg);}
 }
 </style>
+</head>
 
-<div id="preloader">
-  <div class="loader-circle">
-    <div id="loading-number">0%</div>
-  </div>
-  <div class="loader-text">NUNGGU NIH</div>
+<body>
+
+<div id="preloader"></div>
+
+<div id="toggleWrap">
+  <input type="checkbox" id="t">
+  <label for="t"></label>
 </div>
 
+<h1 style="padding:100px">WEBSITE KAMU</h1>
+
 <script>
-let p=0;
-let done=false;
+/* PRELOADER FIX */
+window.onload=function(){
+  let p=document.getElementById("preloader");
+  p.style.opacity="0";
+  setTimeout(()=>{p.style.display="none";},500);
+};
 
-let i=setInterval(()=>{
-  if(p<90){
-    p++;
-    document.getElementById("loading-number").innerText=p+"%";
+/* TOGGLE FIX */
+let t=document.getElementById("t");
+
+if(localStorage.getItem("theme")==="dark"){
+  document.body.classList.add("dark");
+  t.checked=true;
+}
+
+t.onchange=function(){
+  if(t.checked){
+    document.body.classList.add("dark");
+    localStorage.setItem("theme","dark");
+  }else{
+    document.body.classList.remove("dark");
+    localStorage.setItem("theme","light");
   }
-},20);
-
-window.addEventListener("load",()=>{
-  done=true;
-  clearInterval(i);
-
-  let count=setInterval(()=>{
-    if(p<100){
-      p++;
-      document.getElementById("loading-number").innerText=p+"%";
-    }else{
-      clearInterval(count);
-
-      let el=document.getElementById("preloader");
-      el.style.opacity="0";
-
-      setTimeout(()=>{
-        el.style.display="none";
-      },500);
-    }
-  },10);
-});
+};
 </script>
+
+</body>
+</html>
