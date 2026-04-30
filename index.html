@@ -67,84 +67,84 @@ let i=setInterval(()=>{
 </script>
 
 <style>
-:root{
-  --bg:#1a120b;
-  --text:#fff8e1;
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-body{
-  background:var(--bg);
-  color:var(--text);
-  transition:0.4s ease;
+.pill {
+  width: 72px;
+  height: 34px;
+  background: #1a120b;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.35s;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  box-sizing: border-box;
 }
-body.light{
-  --bg:#fff8e1;
-  --text:#1a120b;
+body.light .pill {
+  background: #e5d9c3;
 }
-.theme-toggle{
-  position:fixed;
-  top:20px;
-  right:20px;
-  z-index:999;
+.pill-icons {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  pointer-events: none;
 }
-.switch{
-  width:64px;
-  height:32px;
-  background:#3a2a1a;
-  border-radius:50px;
-  position:relative;
-  cursor:pointer;
-  transition:0.3s;
-  display:flex;
-  align-items:center;
-  padding:0 6px;
+.pill-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* ← ini yang bikin center */
+  font-size: 14px;
+  line-height: 1;
+  transition: opacity 0.25s;
 }
-.icon{
-  font-size:14px;
-  z-index:2;
+.knob {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f2c94c;
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%); /* ← vertikal center pakai ini */
+  transition: left 0.35s cubic-bezier(.4,0,.2,1), background 0.35s;
 }
-.icon.sun{ margin-left:auto; opacity:.4; }
-.icon.moon{ margin-right:auto; opacity:1; }
-.knob{
-  position:absolute;
-  width:26px;
-  height:26px;
-  background:#f2c94c;
-  border-radius:50%;
-  top:3px;
-  left:3px;
-  transition:transform 0.35s ease;
+body.light .knob {
+  left: 42px;
+  background: #1a120b;
 }
-body:not(.light) .knob{
-  transform:translateX(32px);
-}
-body.light .switch{
-  background:#ddd2b0;
-}
-body.light .knob{
-  transform:translateX(0);
-  background:#1a120b;
-}
-body.light .icon.sun{ opacity:1; }
-body.light .icon.moon{ opacity:.4; }
 </style>
 
 <div class="theme-toggle">
-  <div class="switch" onclick="toggleTheme()">
-    <span class="icon moon">🌙</span>
-    <span class="icon sun">☀️</span>
+  <div class="pill" onclick="toggleTheme()">
     <div class="knob"></div>
+    <div class="pill-icons">
+      <span class="pill-icon moon">🌙</span>
+      <span class="pill-icon sun">☀️</span>
+    </div>
   </div>
 </div>
 
 <script>
-function toggleTheme(){
-  let isLight=document.body.classList.toggle("light");
+function toggleTheme() {
+  const isLight = document.body.classList.toggle("light");
   localStorage.setItem("theme", isLight ? "light" : "dark");
 }
-(function(){
-  let saved=localStorage.getItem("theme");
-  if(saved){
-    document.body.classList.toggle("light", saved==="light");
-  }
+(function () {
+  const saved = localStorage.getItem("theme");
+  if (saved) document.body.classList.toggle("light", saved === "light");
 })();
 </script>
