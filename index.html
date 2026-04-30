@@ -65,3 +65,126 @@ let i=setInterval(()=>{
   }
 },20);
 </script>
+<style>
+:root{
+  --bg:#1a120b;
+  --text:#fff8e1;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  transition:0.4s ease;
+}
+
+/* LIGHT MODE */
+body.light{
+  --bg:#fff8e1;
+  --text:#1a120b;
+}
+
+/* TOGGLE POSITION */
+.theme-toggle{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:999;
+}
+
+/* SWITCH */
+.switch{
+  width:64px;
+  height:32px;
+  background:#3a2a1a;
+  border-radius:50px;
+  position:relative;
+  cursor:pointer;
+  transition:0.4s;
+  display:flex;
+  align-items:center;
+  padding:0 5px;
+  box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+/* ICON */
+.icon{
+  font-size:14px;
+  z-index:2;
+  transition:0.3s;
+}
+
+/* posisi icon */
+.icon.sun{
+  margin-left:auto;
+  opacity:0.4;
+}
+.icon.moon{
+  margin-right:auto;
+  opacity:1;
+}
+
+/* BULATAN */
+.knob{
+  position:absolute;
+  width:26px;
+  height:26px;
+  background:#f2c94c;
+  border-radius:50%;
+  top:3px;
+  left:3px;
+  transition:transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+/* LIGHT MODE STYLE */
+body.light .switch{
+  backdrop-filter: blur(6px);
+  background:#ddd2b0;
+}
+
+body.light .knob{
+  transform:translateX(32px);
+  background:#1a120b;
+}
+
+body.light .icon.sun{
+  opacity:1;
+}
+body.light .icon.moon{
+  opacity:0.4;
+}
+</style>
+
+<div class="theme-toggle">
+  <div class="switch" onclick="toggleTheme()">
+    <span class="icon moon">🌙</span>
+    <span class="icon sun">☀️</span>
+    <div class="knob"></div>
+  </div>
+</div>
+
+<script>
+function applyTheme(theme){
+  if(theme==="light"){
+    document.body.classList.add("light");
+  }else{
+    document.body.classList.remove("light");
+  }
+}
+
+function toggleTheme(){
+  let isLight=document.body.classList.toggle("light");
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+}
+
+/* AUTO DETECT FIRST TIME */
+(function(){
+  let saved=localStorage.getItem("theme");
+
+  if(saved){
+    applyTheme(saved);
+  }else{
+    let prefersLight=window.matchMedia("(prefers-color-scheme: light)").matches;
+    applyTheme(prefersLight ? "light" : "dark");
+  }
+})();
+</script>
