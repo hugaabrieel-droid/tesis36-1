@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Tes</title>
-
 <style>
-body{margin:0}
-
-/* PRELOADER */
 #preloader{
   position:fixed;
   top:0;left:0;
@@ -16,87 +7,43 @@ body{margin:0}
   display:flex;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
   z-index:9999;
-  transition:opacity .5s;
+  opacity:1;
+  transition:opacity .6s ease;
 }
 
-/* TOGGLE */
-#toggleWrap{
-  position:fixed;
-  top:20px;
-  right:20px;
-  z-index:10000;
-}
-#toggleWrap input{display:none;}
-#toggleWrap label{
-  width:50px;height:26px;
-  background:#888;
-  border-radius:50px;
-  display:block;
-  position:relative;
-  cursor:pointer;
-}
-#toggleWrap label::before{
-  content:"";
-  width:22px;height:22px;
-  background:#fff;
-  position:absolute;
-  top:2px;left:2px;
+/* spinner */
+.loader{
+  width:50px;
+  height:50px;
+  border:3px solid rgba(255,255,255,.1);
+  border-top:3px solid #f2c94c;
   border-radius:50%;
-  transition:.3s;
-}
-#toggleWrap input:checked + label{
-  background:#f2c94c;
-}
-#toggleWrap input:checked + label::before{
-  transform:translateX(24px);
+  animation:spin 1s linear infinite;
+  margin-bottom:15px;
 }
 
-/* DARK */
-.dark{
-  background:#1a120b;
-  color:#fff8e1;
+@keyframes spin{
+  100%{transform:rotate(360deg);}
 }
 </style>
-</head>
 
-<body>
-
-<div id="preloader"></div>
-
-<div id="toggleWrap">
-  <input type="checkbox" id="t">
-  <label for="t"></label>
+<div id="preloader">
+  <div class="loader"></div>
 </div>
 
-<h1 style="padding:100px">WEBSITE KAMU</h1>
-
 <script>
-/* PRELOADER FIX */
-window.onload=function(){
+window.addEventListener("load",()=>{
   let p=document.getElementById("preloader");
-  p.style.opacity="0";
-  setTimeout(()=>{p.style.display="none";},500);
-};
 
-/* TOGGLE FIX */
-let t=document.getElementById("t");
+  setTimeout(()=>{
+    p.style.opacity="0";
 
-if(localStorage.getItem("theme")==="dark"){
-  document.body.classList.add("dark");
-  t.checked=true;
-}
+    setTimeout(()=>{
+      p.style.display="none";
+    },600);
 
-t.onchange=function(){
-  if(t.checked){
-    document.body.classList.add("dark");
-    localStorage.setItem("theme","dark");
-  }else{
-    document.body.classList.remove("dark");
-    localStorage.setItem("theme","light");
-  }
-};
+  },800); // biar keliatan dulu
+});
 </script>
-
-</body>
-</html>
