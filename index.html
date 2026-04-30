@@ -1,49 +1,91 @@
 <style>
-#preloader{
+:root{
+  --bg:#ffffff;
+  --text:#111111;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  transition:background .3s,color .3s;
+}
+
+/* DARK MODE */
+.dark{
+  --bg:#1a120b;
+  --text:#fff8e1;
+}
+
+/* WRAPPER */
+.theme-toggle{
   position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:#1a120b;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:9999;
-  opacity:1;
-  transition:opacity .6s ease;
+  top:20px;
+  right:20px;
+  z-index:10000;
 }
 
-/* spinner */
-.loader{
-  width:50px;
-  height:50px;
-  border:3px solid rgba(255,255,255,.1);
-  border-top:3px solid #f2c94c;
+/* HIDE INPUT */
+.theme-toggle input{
+  display:none;
+}
+
+/* SWITCH BG */
+.switch{
+  width:52px;
+  height:28px;
+  background:#555;
+  border-radius:50px;
+  position:relative;
+  cursor:pointer;
+  transition:background .3s;
+}
+
+/* BULATAN */
+.switch::before{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:22px;
+  top:3px;
+  left:3px;
+  background:#fff;
   border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin-bottom:15px;
+  transition:transform .3s;
 }
 
-@keyframes spin{
-  100%{transform:rotate(360deg);}
+/* POSISI KANAN = DARK */
+.theme-toggle input:checked + .switch{
+  background:#f2c94c;
+}
+
+.theme-toggle input:checked + .switch::before{
+  transform:translateX(24px);
 }
 </style>
 
-<div id="preloader">
-  <div class="loader"></div>
+<div class="theme-toggle">
+  <input type="checkbox" id="toggle">
+  <label for="toggle" class="switch"></label>
 </div>
 
 <script>
-window.addEventListener("load",()=>{
-  let p=document.getElementById("preloader");
+const toggle=document.getElementById("toggle");
+const saved=localStorage.getItem("theme");
 
-  setTimeout(()=>{
-    p.style.opacity="0";
+/* Default: LIGHT (kiri) */
+if(saved==="dark"){
+  document.body.classList.add("dark");
+  toggle.checked=true; // kanan
+}
 
-    setTimeout(()=>{
-      p.style.display="none";
-    },600);
-
-  },800); // biar keliatan dulu
+toggle.addEventListener("change",()=>{
+  if(toggle.checked){
+    document.body.classList.add("dark"); // kanan = dark
+    localStorage.setItem("theme","dark");
+  }else{
+    document.body.classList.remove("dark"); // kiri = light
+    localStorage.setItem("theme","light");
+  }
 });
 </script>
